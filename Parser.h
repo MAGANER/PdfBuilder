@@ -43,8 +43,6 @@ namespace Parser
 		return new Tag(val);
 	}
 
-	std::string change_spaces(const std::string& line);
-	std::string return_spaces(const std::string& line);
 	std::vector<Node*> parse(const std::string& line);
 	std::vector<std::string> split(std::string s, std::string delimiter);
 	std::string put_new_line_ch(const std::string& line);
