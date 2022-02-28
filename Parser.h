@@ -43,6 +43,7 @@ namespace Parser
 		return new Tag(val);
 	}
 
+	std::vector<Node*> parse_script(const std::vector<std::string>& script);
 	std::vector<Node*> parse(const std::string& line);
 	std::vector<std::string> split(std::string s, std::string delimiter);
 	std::string put_new_line_ch(const std::string& line);

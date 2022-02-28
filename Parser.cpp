@@ -49,8 +49,8 @@ tags_str Parser::get_tag(const std::string& line)
 }
 std::string Parser::put_new_line_ch(const std::string& line)
 {
-	auto reg = std::regex("<br>");
-	return std::regex_replace(line.c_str(), reg, "\n");
+	auto reg = std::regex("\n");
+	return std::regex_replace(line.c_str(), reg, "<br>");
 }
 std::vector<std::string> Parser::split(std::string s, std::string delimiter)
 {
@@ -106,4 +106,16 @@ bool Parser::is_spaceful(const std::string& line)
 	regex space("[ \t\r\n\f]{"+to_string(line.size())+"}");
 	if (regex_match(line.c_str(), space)) return true;
 	else return false;
+}
+std::vector<Node*> Parser::parse_script(const std::vector<std::string>& script)
+{
+	using namespace std;
+
+	vector<Node*> result;
+	for (auto& n : script)
+	{
+		auto parsed_line = parse(n);
+		copy(parsed_line.begin(), parsed_line.end(), back_inserter(result));
+	}
+	return result;
 }
