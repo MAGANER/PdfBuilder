@@ -83,14 +83,12 @@ State TagProcessor::process_tag(const State& state,
 		}
 		else
 		{
-			std::cout << "error: " << arg << " is not a number!";
-			exit(-1);
+			error(arg + " is not a number!");
 		}
 	}
 	else
 	{
-		std::cout << "error: " << tag << " is incorrect!";
-		exit(-1);
+		error(tag + " is incorrect!");
 	}
 }
 State TagProcessor::reset(const State& state)
@@ -107,4 +105,9 @@ bool TagProcessor::is_number(const std::string& number)
 		if (!isdigit(n)) return false;
 	}
 	return true;
+}
+void TagProcessor::error(const std::string& text)
+{
+	std::cout << "error:" << text;
+	exit(-1);
 }

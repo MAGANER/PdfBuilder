@@ -51,6 +51,7 @@ namespace TagProcessor
 	std::string extract_tag_arguments(const std::string& tag);
 
 	bool is_number(const std::string& number);
+	void error(const std::string& text);
 
 };
 #endif
