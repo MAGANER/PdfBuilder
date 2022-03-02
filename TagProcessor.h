@@ -25,14 +25,17 @@ namespace TagProcessor
 			curr_x = state.curr_x;
 			curr_y = state.curr_y;
 			space = state.space;
+			text_rise = state.text_rise;
 		}
 		State(int curr_x, int curr_y)
 		{
 			this->curr_x = curr_x;
 			this->curr_y = curr_y;
+			text_rise = 0;
 		}
 		~State(){}
 		int curr_x, curr_y;
+		int text_rise;
 		std::string space;
 	};
 
@@ -52,6 +55,5 @@ namespace TagProcessor
 
 	bool is_number(const std::string& number);
 	void error(const std::string& text);
-
 };
 #endif

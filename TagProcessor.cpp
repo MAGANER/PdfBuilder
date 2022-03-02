@@ -18,10 +18,7 @@ void TagProcessor::process_parsed_script(const std::string& document_name,
 			state = process_tag(state, node->val);
 			break;
 		case Parser::Node::NodeType::text:
-		{
 			process_text(doc, node->val, state);
-			state = reset(state);
-		}
 			break;
 		}
 	}
@@ -44,7 +41,7 @@ std::string TagProcessor::extract_tag_arguments(const std::string& tag)
 void TagProcessor::process_text(Document& doc, const std::string& text, const State& state)
 {
 	auto _text = state.space + text;
-	std::cout << "_text" << _text << std::endl;
+	doc.page().canvas().text_rise(state.text_rise);
 	doc.page().canvas().text(state.curr_x, state.curr_y, _text.c_str());
 }
 
@@ -67,9 +64,11 @@ State TagProcessor::process_tag(const State& state,
 		update.curr_x = START_X;
 		return update;
 	}
+	else if (tag == "<rs>") return reset(state);
 	else if (CHECK("ss"))
 	{
 		auto arg = extract_tag_arguments(tag);
+
 		if (is_number(arg))
 		{
 			int number = atoi(arg.c_str());
@@ -86,6 +85,19 @@ State TagProcessor::process_tag(const State& state,
 			error(arg + " is not a number!");
 		}
 	}
+	else if (CHECK("str"))
+	{
+		auto arg = extract_tag_arguments(tag);
+		std::cout << arg << std::endl;
+		if (is_number(arg))
+		{
+			int number = atoi(arg.c_str());
+			
+			State update(state);
+			update.text_rise = number;
+			return update;
+		}
+	}
 	else
 	{
 		error(tag + " is incorrect!");
@@ -100,9 +112,12 @@ State TagProcessor::reset(const State& state)
 }
 bool TagProcessor::is_number(const std::string& number)
 {
-	for (auto& n : number)
+	for (int i = 0;i<number.size();i++)
 	{
-		if (!isdigit(n)) return false;
+		auto n = number[i];
+		if (i != 0) { if (!isdigit(n)) return false; }
+		else if (n != '-' and !isdigit(n)) return false;
+
 	}
 	return true;
 }
