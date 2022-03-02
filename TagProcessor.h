@@ -26,16 +26,19 @@ namespace TagProcessor
 			curr_y = state.curr_y;
 			space = state.space;
 			text_rise = state.text_rise;
+			font_size = state.font_size;
 		}
 		State(int curr_x, int curr_y)
 		{
 			this->curr_x = curr_x;
 			this->curr_y = curr_y;
 			text_rise = 0;
+			font_size = 12;
 		}
 		~State(){}
 		int curr_x, curr_y;
 		int text_rise;
+		int font_size;
 		std::string space;
 	};
 

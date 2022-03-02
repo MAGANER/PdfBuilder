@@ -40,7 +40,10 @@ std::string TagProcessor::extract_tag_arguments(const std::string& tag)
 }
 void TagProcessor::process_text(Document& doc, const std::string& text, const State& state)
 {
+	std::string font = "standard; name=Helvetica;" + std::string(" size=") + std::to_string(state.font_size);
+	auto courier = doc.font_load(font.c_str());
 	auto _text = state.space + text;
+	doc.page().canvas().text_font(courier);
 	doc.page().canvas().text_rise(state.text_rise);
 	doc.page().canvas().text(state.curr_x, state.curr_y, _text.c_str());
 }
@@ -88,7 +91,6 @@ State TagProcessor::process_tag(const State& state,
 	else if (CHECK("str"))
 	{
 		auto arg = extract_tag_arguments(tag);
-		std::cout << arg << std::endl;
 		if (is_number(arg))
 		{
 			int number = atoi(arg.c_str());
@@ -96,6 +98,23 @@ State TagProcessor::process_tag(const State& state,
 			State update(state);
 			update.text_rise = number;
 			return update;
+		}
+	}
+	else if (CHECK("fs"))
+	{
+		auto arg = extract_tag_arguments(tag);
+		if (is_number(arg))
+		{
+			auto size = atoi(arg.c_str());
+			if (size < 0)error(arg + " must be a positive number!");
+
+			State update(state);
+			update.font_size = size;
+			return update;
+		}
+		else
+		{
+			error(arg + " is not a number!");
 		}
 	}
 	else
