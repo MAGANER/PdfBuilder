@@ -50,8 +50,9 @@ namespace TagProcessor
 	void process_parsed_script(const std::string& document_name,
 							   const std::vector<Parser::Node*>& nodes);
 
-	State process_tag(const State& state, const std::string& tag);
+	State process_tag(Document& doc, const State& state, const std::string& tag);
 	State reset(const State& state);//reset everything except pos
+	State move_down(const State& state);
 	void process_text(Document& doc,const std::string& text, const State& state);
 
 	std::string extract_tag_arguments(const std::string& tag);

@@ -15,7 +15,7 @@ void TagProcessor::process_parsed_script(const std::string& document_name,
 		switch (node->type)
 		{
 		case Parser::Node::NodeType::tag:
-			state = process_tag(state, node->val);
+			state = process_tag(doc,state, node->val);
 			break;
 		case Parser::Node::NodeType::text:
 			process_text(doc, node->val, state);
@@ -41,6 +41,7 @@ std::string TagProcessor::extract_tag_arguments(const std::string& tag)
 void TagProcessor::process_text(Document& doc, const std::string& text, const State& state)
 {
 	std::string font = "standard; name=Helvetica;" + std::string(" size=") + std::to_string(state.font_size);
+
 	auto courier = doc.font_load(font.c_str());
 	auto _text = state.space + text;
 	doc.page().canvas().text_font(courier);
@@ -49,7 +50,8 @@ void TagProcessor::process_text(Document& doc, const std::string& text, const St
 }
 
 #define CHECK(name) check(name) and is_tag_with_arg(tag)
-State TagProcessor::process_tag(const State& state,
+State TagProcessor::process_tag(Document& doc, 
+								const State& state,
 								const std::string& tag)
 {
 	auto is_tag_with_arg = [&](const std::string& tag)
@@ -62,12 +64,17 @@ State TagProcessor::process_tag(const State& state,
 	};
 	if (tag == "<br>")
 	{
-		State update(state);
-		update.curr_y -= 10;
-		update.curr_x = START_X;
-		return update;
+		return move_down(state);
 	}
 	else if (tag == "<rs>") return reset(state);
+	else if (tag == "<hr>")
+	{
+		doc.page().canvas().rectangle(START_X, state.curr_y-10, 500, 1);
+		char* m = new char('s');
+		doc.page().canvas().path_paint(m);
+		delete m;
+		return move_down(state);
+	}
 	else if (CHECK("ss"))
 	{
 		auto arg = extract_tag_arguments(tag);
@@ -121,6 +128,13 @@ State TagProcessor::process_tag(const State& state,
 	{
 		error(tag + " is incorrect!");
 	}
+}
+State TagProcessor::move_down(const State& state)
+{
+	State update(state);
+	update.curr_y -= 10;
+	update.curr_x = START_X;
+	return update;
 }
 State TagProcessor::reset(const State& state)
 {
