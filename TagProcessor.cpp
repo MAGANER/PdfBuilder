@@ -45,6 +45,8 @@ void TagProcessor::process_text(Document& doc, const std::string& text, const St
 	auto courier = doc.font_load(font.c_str());
 	auto _text = state.space + text;
 	doc.page().canvas().text_font(courier);
+
+	doc.page().canvas().color("f", state.r,state.g,state.b);
 	doc.page().canvas().text_rise(state.text_rise);
 	doc.page().canvas().text(state.curr_x, state.curr_y, _text.c_str());
 }
@@ -123,6 +125,28 @@ State TagProcessor::process_tag(Document& doc,
 		{
 			error(arg + " is not a number!");
 		}
+	}
+	else if (CHECK("fc"))
+	{
+		auto arg = extract_tag_arguments(tag)+",";
+		std::vector<std::string> codes = Parser::split(arg, ",");
+		for (auto n = codes.begin(); n != codes.end(); n++)
+			if ((*n) == ",")codes.erase(n);
+		codes.erase(--codes.end());
+
+		if (codes.size() != 3)error("incorrect number of color codes!");
+		for (auto c : codes)if (!is_number(c))error("code isn't number!");
+		
+		int r = atoi(codes[0].c_str());
+		int g = atoi(codes[1].c_str());
+		int b = atoi(codes[2].c_str());
+
+		State update(state);
+		update.r = (double)r/255;
+		update.g = (double)g/255;
+		update.b = (double)b/255;
+		return update;
+
 	}
 	else
 	{

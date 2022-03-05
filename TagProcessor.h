@@ -27,6 +27,9 @@ namespace TagProcessor
 			space = state.space;
 			text_rise = state.text_rise;
 			font_size = state.font_size;
+			r = state.r;
+			g = state.g;
+			b = state.b;
 		}
 		State(int curr_x, int curr_y)
 		{
@@ -34,12 +37,17 @@ namespace TagProcessor
 			this->curr_y = curr_y;
 			text_rise = 0;
 			font_size = 12;
+			r = 0;
+			g = 0;
+			b = 0;
 		}
 		~State(){}
 		int curr_x, curr_y;
 		int text_rise;
 		int font_size;
 		std::string space;
+
+		double r, g, b;
 	};
 
 	inline Document init(const std::string& document_name)
