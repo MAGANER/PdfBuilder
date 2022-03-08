@@ -66,11 +66,13 @@ State TagProcessor::process_tag(Document& doc,
 	};
 	if (tag == "<br>")
 	{
+		//move x to the start pos, but move y down
 		return move_down(state);
 	}
-	else if (tag == "<rs>") return reset(state);
+	else if (tag == "<rs>") return reset(state);//set state to default one
 	else if (tag == "<hr>")
 	{
+		//write line just like html hr
 		doc.page().canvas().rectangle(START_X, state.curr_y-10, 500, 1);
 		char* m = new char('s');
 		doc.page().canvas().path_paint(m);
@@ -79,6 +81,7 @@ State TagProcessor::process_tag(Document& doc,
 	}
 	else if (CHECK("ss"))
 	{
+		//add space to the text
 		auto arg = extract_tag_arguments(tag);
 
 		if (is_number(arg))
@@ -99,6 +102,7 @@ State TagProcessor::process_tag(Document& doc,
 	}
 	else if (CHECK("str"))
 	{
+		//set text rise(move text upper/lower)
 		auto arg = extract_tag_arguments(tag);
 		if (is_number(arg))
 		{
@@ -111,6 +115,7 @@ State TagProcessor::process_tag(Document& doc,
 	}
 	else if (CHECK("fs"))
 	{
+		//set font size
 		auto arg = extract_tag_arguments(tag);
 		if (is_number(arg))
 		{
@@ -128,6 +133,7 @@ State TagProcessor::process_tag(Document& doc,
 	}
 	else if (CHECK("fc"))
 	{
+		//set color
 		auto arg = extract_tag_arguments(tag)+",";
 		std::vector<std::string> codes = Parser::split(arg, ",");
 		for (auto n = codes.begin(); n != codes.end(); n++)
@@ -147,6 +153,23 @@ State TagProcessor::process_tag(Document& doc,
 		update.b = (double)b/255;
 		return update;
 
+	}
+	else if (CHECK("mac"))
+	{
+		//set macro
+		auto arg = extract_tag_arguments(tag);
+		auto sep_pos = arg.find("#");
+		if (sep_pos == std::string::npos)
+		{
+			error("incorrect macro syntax! no + !");
+		}
+
+		auto macro_name = slice(arg, 0, sep_pos);
+		auto macro_val = slice(arg, sep_pos+1, arg.size());
+
+		State updated(state);
+		updated.macros[macro_name] = macro_val;
+		return updated;
 	}
 	else
 	{
@@ -182,4 +205,10 @@ void TagProcessor::error(const std::string& text)
 {
 	std::cout << "error:" << text;
 	exit(-1);
+}
+std::string TagProcessor::slice(const std::string& str,int begin,int end)
+{
+	std::string _str;
+	for (int i = begin; i < end; i++)_str += str[i];
+	return _str;
 }

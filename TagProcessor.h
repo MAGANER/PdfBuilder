@@ -4,6 +4,7 @@
 #include<string>
 #include<vector>
 #include<iostream>
+#include<map>
 #include"jagpdf/api.h" //jagpdf
 #include"Parser.h"
 
@@ -30,6 +31,7 @@ namespace TagProcessor
 			r = state.r;
 			g = state.g;
 			b = state.b;
+			macros = state.macros;
 		}
 		State(int curr_x, int curr_y)
 		{
@@ -48,6 +50,8 @@ namespace TagProcessor
 		std::string space;
 
 		double r, g, b;
+
+		std::map<std::string, std::string> macros;
 	};
 
 	inline Document init(const std::string& document_name)
@@ -67,5 +71,6 @@ namespace TagProcessor
 
 	bool is_number(const std::string& number);
 	void error(const std::string& text);
+	std::string slice(const std::string& str,int begin,int end);
 };
 #endif
