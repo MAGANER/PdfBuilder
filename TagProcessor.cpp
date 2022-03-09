@@ -46,7 +46,7 @@ void TagProcessor::process_text(Document& doc, const std::string& text, const St
 	auto courier = doc.font_load(font.c_str());
 	auto _text = state.space + text;
 	doc.page().canvas().text_font(courier);
-
+	doc.page().canvas().color_space("f", CS_DEVICE_RGB);
 	doc.page().canvas().color("f", state.r,state.g,state.b);
 	doc.page().canvas().text_rise(state.text_rise);
 	doc.page().canvas().text(state.curr_x, state.curr_y, _text.c_str());
