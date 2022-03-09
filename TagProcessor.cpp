@@ -172,6 +172,28 @@ State TagProcessor::process_tag(Document& doc,
 		updated.macros[macro_name] = macro_val;
 		return updated;
 	}
+	else if (CHECK("img"))
+	{
+		//set image
+		auto arg = extract_tag_arguments(tag);
+		try
+		{
+			auto img = doc.image_load_file(arg.c_str());
+
+			auto y1 = state.curr_y - img.height() / 2;
+			auto y2 = img.height() / 4;
+			auto y = y1 - y2;
+			doc.page().canvas().image(img, state.curr_x, y);
+
+			State updated(state);
+			updated.curr_y = y;
+			return move_down(updated);
+		}
+		catch (pdf::Exception const& exc) 
+		{
+			error(exc.what());  
+		}
+	}
 	else
 	{
 		error(tag + " is incorrect!");
