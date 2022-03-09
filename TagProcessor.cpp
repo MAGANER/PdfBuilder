@@ -12,13 +12,14 @@ void TagProcessor::process_parsed_script(const std::string& document_name,
 
 	for (auto& node : nodes)
 	{
+		auto processed = apply_replacing_macro(node->val, state);
 		switch (node->type)
 		{
 		case Parser::Node::NodeType::tag:
-			state = process_tag(doc,state, node->val);
+			state = process_tag(doc,state, processed);
 			break;
 		case Parser::Node::NodeType::text:
-			process_text(doc, node->val, state);
+			process_text(doc, processed, state);
 			break;
 		}
 	}
@@ -211,4 +212,18 @@ std::string TagProcessor::slice(const std::string& str,int begin,int end)
 	std::string _str;
 	for (int i = begin; i < end; i++)_str += str[i];
 	return _str;
+}
+std::string TagProcessor::apply_replacing_macro(const std::string& node, const State& state)
+{
+	using namespace std;
+
+	for (auto& macro : state.macros)
+	{
+		regex check("@" + macro.first);
+		if (regex_search(node.c_str(), check))
+		{
+			return regex_replace(node, check, macro.second);
+		}
+	}
+	return node;
 }

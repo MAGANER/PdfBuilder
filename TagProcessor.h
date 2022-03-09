@@ -72,5 +72,6 @@ namespace TagProcessor
 	bool is_number(const std::string& number);
 	void error(const std::string& text);
 	std::string slice(const std::string& str,int begin,int end);
+	std::string apply_replacing_macro(const std::string& node, const State& state);
 };
 #endif
