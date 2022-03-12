@@ -63,7 +63,7 @@ namespace TagProcessor
 							   const std::vector<Parser::Node*>& nodes);
 
 	State process_tag(Document& doc, const State& state, const std::string& tag);
-	State reset(const State& state);//reset everything except pos
+	State reset(const State& state, Document& doc);//reset everything except pos
 	State move_down(const State& state);
 	void process_text(Document& doc,const std::string& text, const State& state);
 

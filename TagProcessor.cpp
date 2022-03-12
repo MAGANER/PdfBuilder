@@ -70,7 +70,7 @@ State TagProcessor::process_tag(Document& doc,
 		//move x to the start pos, but move y down
 		return move_down(state);
 	}
-	else if (tag == "<rs>") return reset(state);//set state to default one
+	else if (tag == "<rs>") return reset(state,doc);//set state to default one
 	else if (tag == "<hr>")
 	{
 		//write line just like html hr
@@ -194,6 +194,23 @@ State TagProcessor::process_tag(Document& doc,
 			error(exc.what());  
 		}
 	}
+	else if (CHECK("rt"))
+	{
+		auto arg = extract_tag_arguments(tag);
+		if (is_number(arg))
+		{
+			auto angle = atoi(arg.c_str());
+			if (0 <= angle <= 360)
+			{
+				const auto PI = 3.14;
+				auto rad = (PI/180) * angle;
+				doc.page().canvas().rotate(rad);
+				return State(state);
+			}
+			else error("angle must be between 0 and 360!");
+		}
+		else error(arg + " must be a number!");
+	}
 	else
 	{
 		error(tag + " is incorrect!");
@@ -206,8 +223,9 @@ State TagProcessor::move_down(const State& state)
 	update.curr_x = START_X;
 	return update;
 }
-State TagProcessor::reset(const State& state)
+State TagProcessor::reset(const State& state,Document& doc)
 {
+	doc.page().canvas().rotate(0);
 	auto x = state.curr_x;
 	auto y = state.curr_y;
 
