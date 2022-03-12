@@ -9,7 +9,6 @@ namespace ArgumentReader
 	{
 		script,
 		document,
-		macro,
 		nothing,
 		error,	
 	};
@@ -17,22 +16,19 @@ namespace ArgumentReader
 	{
 		if      (arg.find("-s") != std::string::npos) return ArgType::script;
 		else if (arg.find("-d") != std::string::npos) return ArgType::document;
-		else if (arg.find("-m") != std::string::npos) return ArgType::macro;
 		else if (arg.empty()) return ArgType::nothing;
 		else return ArgType::error;
 	}
 	struct Args
 	{
 		Args(const std::string& sp,
-			 const std::string& dp,
-			 const std::string& mp)
+			 const std::string& dp)
 		{
 			script_path     = sp;
 			document_path   = dp;
-			macro_file_path = mp;
 		}
 		~Args(){}
-		std::string script_path, document_path, macro_file_path;
+		std::string script_path, document_path;
 	};
 
 	Args* read_args(int argc, char** argv)
@@ -51,12 +47,11 @@ namespace ArgumentReader
 			{
 			case ArgType::script:   script = args[i].substr(2);  break;
 			case ArgType::document: doc    = args[i].substr(2);  break;
-			case ArgType::macro:    macro  = args[i].substr(2);  break;
 			case ArgType::error:return nullptr;
 			};
 		}
 		if (script.empty() || doc.empty()) return nullptr; //these are very important args
-		return new Args(script, doc, macro);
+		return new Args(script, doc);
 
 	}
 };
