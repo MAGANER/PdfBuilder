@@ -80,6 +80,17 @@ State TagProcessor::process_tag(Document& doc,
 		delete m;
 		return move_down(state);
 	}
+	else if (tag == "<np>")
+	{
+		doc.page_end();
+		doc.page_start(PAGE_WIDTH, PAGE_HEIGHT);
+
+		State update(state);
+		update.curr_x = START_X;
+		update.curr_y = START_Y;
+		return update;
+
+	}
 	else if (CHECK("ss"))
 	{
 		//add space to the text
