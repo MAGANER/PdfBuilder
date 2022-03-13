@@ -91,6 +91,23 @@ State TagProcessor::process_tag(Document& doc,
 		return update;
 
 	}
+	else if (CHECK("mx"))
+	{
+		auto arg = extract_tag_arguments(tag);
+		if (is_number(arg))
+		{
+			auto val = atoi(arg.c_str());
+			if (0 <= val <= 100)
+			{
+				State updated(state);
+				auto len = PAGE_HEIGHT * ((float)1/val);
+				updated.curr_x =len*state.font_size;
+				return updated;
+			}
+			else error("number must be between 0 and 100!");
+		}
+		else error("argument must be natural number!");
+	}
 	else if (CHECK("ss"))
 	{
 		//add space to the text
