@@ -100,8 +100,25 @@ State TagProcessor::process_tag(Document& doc,
 			if (0 <= val <= 100)
 			{
 				State updated(state);
-				auto len = PAGE_HEIGHT * ((float)1/val);
-				updated.curr_x =len*state.font_size;
+				auto len = PAGE_WIDTH * ((float)1/val);
+				updated.curr_x = len*state.font_size;
+				return updated;
+			}
+			else error("number must be between 0 and 100!");
+		}
+		else error("argument must be natural number!");
+	}
+	else if (CHECK("my"))
+	{
+		auto arg = extract_tag_arguments(tag);
+		if (is_number(arg))
+		{
+			auto val = atoi(arg.c_str());
+			if (0 <= val <= 100)
+			{
+				State updated(state);
+				auto len = PAGE_HEIGHT * ((float)1 / val);
+				updated.curr_y = len * state.font_size;
 				return updated;
 			}
 			else error("number must be between 0 and 100!");
