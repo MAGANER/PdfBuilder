@@ -9,6 +9,10 @@ create language to generate pdf generators, because i prefer Emacs above all els
 
 Current state of language is very minimalistic, but it is able to create simple documents.
 
+# How to you
+pdfbuilder.exe ```-sscriptname``` ```-doutput``` ```-mmacrofile```<br>
+macrofile is optional.<br>
+
 # Syntax
 There are 2 elements: regular text and tags, changing rendering state.<br>
 Every tag is surrounded with <>, so it looks like ```<tag>```<br>
@@ -33,3 +37,8 @@ So check list of tag below:<br>
 Macro acts in the same way like ```DEFINE``` from C/C++ programming language. It is used to replace complex anything.<br>
 to define macro write - ```<mac:name#value>``` <br>
 to use macro write anywhere you need ```@name```, so macro value will be put instead of ```@name```
+
+### Macro file
+Just a regular file, containg a list of predefined macroses.<br>
+Before your script is loaded and processed, it reads the macro script and saves all macroses and then<br>
+they can be used in your script<br>
