@@ -19,9 +19,17 @@ So check list of tag below:<br>
 ```<br>``` - moves the cursor down to the start of new line.<br>
 ```<rs>``` - resets state of rendering, setting the default values.<br>
 ```<hr>``` - sets horizontal line at current place of cursor.(i mean current position along Y axis).<br>
+```<np>``` - creates new page.
 ```<ss:arg>```  - takes any natural number and sets spaces.<br>
 ```<str:arg>``` - takes any number and sets text rise.<br>
 ```<fs:arg>```  - takes any natural number and sets the size of font.<br>  
 ```<fc:red,green,blue>``` - takes 3 number beetween 0 and 255 and sets the color in RGB-space.<br>
 ```<img:path>``` - takes the path of image and sets it at current position of cursor<br>
 ```<rt:angle>``` - takes the angle between 0 and 360 and sets rotation angle of every object on page.<br>
+```<mx:arg>``` - takes number between 0% and 100% and moves position from right side to left one along X axis.<br>
+```<my:arg>``` - takes number between 0% and 100% and moves position from right side to left one along Y axis.<br>
+
+## Macro
+Macro acts in the same way like ```DEFINE``` from C/C++ programming language. It is used to replace complex anything.<br>
+to define macro write - ```<mac:name#value>``` <br>
+to use macro write anywhere you need ```@name```, so macro value will be put instead of ```@name```
