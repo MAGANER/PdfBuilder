@@ -3,12 +3,14 @@ using namespace TagProcessor;
 
 
 void TagProcessor::process_parsed_script(const std::string& document_name,
-										 const std::vector<Parser::Node*>& nodes)
+										 const std::vector<Parser::Node*>& nodes,
+										 const mt& macro_table)
 {
 	auto doc = TagProcessor::init(document_name);
 	doc.page_start(PAGE_WIDTH, PAGE_HEIGHT);
 
 	State state(START_X, START_Y);
+	for (auto& macro : macro_table)state.macros[macro.first] = macro.second;
 
 	for (auto& node : nodes)
 	{
@@ -63,7 +65,8 @@ State TagProcessor::process_tag(Document& doc,
 	};
 	auto check = [&](const std::string& tag_name)
 	{
-		return tag.find(tag_name) != std::string::npos;
+		auto pos = tag.find(tag_name);
+		return pos != std::string::npos and pos == 1;
 	};
 	if (tag == "<br>")
 	{
@@ -202,20 +205,7 @@ State TagProcessor::process_tag(Document& doc,
 	}
 	else if (CHECK("mac"))
 	{
-		//set macro
-		auto arg = extract_tag_arguments(tag);
-		auto sep_pos = arg.find("#");
-		if (sep_pos == std::string::npos)
-		{
-			error("incorrect macro syntax! no + !");
-		}
-
-		auto macro_name = slice(arg, 0, sep_pos);
-		auto macro_val = slice(arg, sep_pos+1, arg.size());
-
-		State updated(state);
-		updated.macros[macro_name] = macro_val;
-		return updated;
+		return add_macro(tag, state);
 	}
 	else if (CHECK("img"))
 	{
@@ -261,6 +251,55 @@ State TagProcessor::process_tag(Document& doc,
 		error(tag + " is incorrect!");
 	}
 }
+std::map<std::string, std::string> TagProcessor::process_macro_script(const std::vector<Parser::Node*>& nodes)
+{
+	auto is_tag_with_arg = [&](const std::string& tag)
+	{
+		return tag.find(":") != std::string::npos;
+	};
+	auto check = [&](const std::string& tag_name, const std::string& tag)
+	{
+		auto pos = tag.find(tag_name);
+		return pos != std::string::npos and pos == 1;
+	};
+
+	std::map<std::string, std::string> macro_table;
+	State state(0,0);
+	for (auto& node : nodes)
+	{
+		if (node->type == Parser::Node::NodeType::tag)
+		{
+			auto val = node->val;
+			if (check("mac", val) and is_tag_with_arg(val))
+			{
+				state = add_macro(val, state);
+			}
+		}
+	}
+
+	for (auto& m : state.macros)
+	{
+		macro_table[m.first] = m.second;
+	}
+	return macro_table;
+}
+State TagProcessor::add_macro(const std::string& tag, const State& state)
+{
+	//set macro
+	auto arg = extract_tag_arguments(tag);
+	auto sep_pos = arg.find("#");
+	if (sep_pos == std::string::npos)
+	{
+		error("incorrect macro syntax! no # !");
+	}
+
+	auto macro_name = slice(arg, 0, sep_pos);
+	auto macro_val = slice(arg, sep_pos + 1, arg.size());
+
+	State updated(state);
+	updated.macros[macro_name] = macro_val;
+	return updated;
+}
 State TagProcessor::move_down(const State& state)
 {
 	State update(state);
@@ -273,8 +312,11 @@ State TagProcessor::reset(const State& state,Document& doc)
 	doc.page().canvas().rotate(0);
 	auto x = state.curr_x;
 	auto y = state.curr_y;
+	auto macro_table = state.macros;
 
-	return State(x, y);
+	auto reseted = State(x, y);
+	reseted.macros = macro_table;
+	return reseted;
 }
 bool TagProcessor::is_number(const std::string& number)
 {

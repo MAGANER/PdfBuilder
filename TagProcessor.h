@@ -7,7 +7,8 @@
 #include<map>
 #include"jagpdf/api.h" //jagpdf
 #include"Parser.h"
-
+#define mt std::map<std::string, std::string>
+#define make_mt std::map<std::string, std::string>()
 namespace TagProcessor
 {
 	using namespace jag;
@@ -60,7 +61,8 @@ namespace TagProcessor
 	}
 
 	void process_parsed_script(const std::string& document_name,
-							   const std::vector<Parser::Node*>& nodes);
+							   const std::vector<Parser::Node*>& nodes,
+							   const mt& macro_table);
 
 	State process_tag(Document& doc, const State& state, const std::string& tag);
 	State reset(const State& state, Document& doc);//reset everything except pos
@@ -73,5 +75,7 @@ namespace TagProcessor
 	void error(const std::string& text);
 	std::string slice(const std::string& str,int begin,int end);
 	std::string apply_replacing_macro(const std::string& node, const State& state);
+	State add_macro(const std::string& tag, const State& state);
+	std::map<std::string, std::string> process_macro_script(const std::vector<Parser::Node*>& nodes);
 };
 #endif

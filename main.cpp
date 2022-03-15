@@ -19,9 +19,17 @@ int main(int argc, char** argv)
 	}
 	else
 	{
+		auto macro_table = make_mt;
+		if (!args->macro_file.empty())
+		{
+			auto script = read_script(args->macro_file);
+			auto parsed = Parser::parse_script(script);
+			macro_table = TagProcessor::process_macro_script(parsed);
+		}
+		
 		auto script = read_script(args->script_path);
 		auto parsed = Parser::parse_script(script);
-		TagProcessor::process_parsed_script(args->document_path, parsed);
+		TagProcessor::process_parsed_script(args->document_path, parsed,macro_table);
 	}
 
 	delete args;
