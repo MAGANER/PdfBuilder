@@ -9,7 +9,7 @@ create language to generate pdf generators, because i prefer Emacs above all els
 
 Current state of language is very minimalistic, but it is able to create simple documents.
 
-# How to you
+# How to use
 pdfbuilder.exe ```-sscriptname``` ```-doutput``` ```-mmacrofile```<br>
 macrofile is optional.<br>
 
