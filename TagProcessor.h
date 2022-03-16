@@ -33,6 +33,7 @@ namespace TagProcessor
 			g = state.g;
 			b = state.b;
 			macros = state.macros;
+			kerning = state.kerning;
 		}
 		State(int curr_x, int curr_y)
 		{
@@ -43,11 +44,13 @@ namespace TagProcessor
 			r = 0;
 			g = 0;
 			b = 0;
+			kerning = 0;
 		}
 		~State(){}
 		int curr_x, curr_y;
 		int text_rise;
 		int font_size;
+		float kerning;
 		std::string space;
 
 		double r, g, b;
@@ -71,6 +74,7 @@ namespace TagProcessor
 
 	std::string extract_tag_arguments(const std::string& tag);
 
+	bool is_real_number(const std::string& number);
 	bool is_number(const std::string& number);
 	void error(const std::string& text);
 	std::string slice(const std::string& str,int begin,int end);

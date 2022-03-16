@@ -47,6 +47,7 @@ void TagProcessor::process_text(Document& doc, const std::string& text, const St
 
 	auto courier = doc.font_load(font.c_str());
 	auto _text = state.space + text;
+	doc.page().canvas().text_character_spacing(state.kerning);
 	doc.page().canvas().text_font(courier);
 	doc.page().canvas().color_space("f", CS_DEVICE_RGB);
 	doc.page().canvas().color("f", state.r,state.g,state.b);
@@ -246,6 +247,20 @@ State TagProcessor::process_tag(Document& doc,
 		}
 		else error(arg + " must be a number!");
 	}
+	else if (CHECK("sk"))
+	{
+		//set kerning
+		auto arg = extract_tag_arguments(tag);
+		if (is_real_number(arg))
+		{
+			auto kerning_val = atof(arg.c_str());
+			State updated(state);
+			updated.kerning = kerning_val;
+			return updated;
+		}
+		else error("kerning argument must be real number!");
+
+	}
 	else
 	{
 		error(tag + " is incorrect!");
@@ -325,6 +340,21 @@ bool TagProcessor::is_number(const std::string& number)
 		auto n = number[i];
 		if (i != 0) { if (!isdigit(n)) return false; }
 		else if (n != '-' and !isdigit(n)) return false;
+
+	}
+	return true;
+}
+bool TagProcessor::is_real_number(const std::string& number)
+{
+	if (number[1] != '.')return false;
+	for (int i = 0; i < number.size(); i++)
+	{
+		auto n = number[i];
+		if (i != 1)
+		{
+			if (i != 0) { if (!isdigit(n)) return false; }
+			else if (n != '-' and !isdigit(n)) return false;
+		}
 
 	}
 	return true;
