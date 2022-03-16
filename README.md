@@ -32,6 +32,7 @@ So check list of tag below:<br>
 ```<rt:angle>``` - takes the angle between 0 and 360 and sets rotation angle of every object on page.<br>
 ```<mx:arg>``` - takes number between 0% and 100% and moves position from right side to left one along X axis.<br>
 ```<my:arg>``` - takes number between 0% and 100% and moves position from right side to left one along Y axis.<br>
+```<sk:arg>``` - takes real number as a value of kerning.
 
 ## Macro
 Macro acts in the same way like ```DEFINE``` from C/C++ programming language. It is used to replace complex anything.<br>
